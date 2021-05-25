@@ -5,12 +5,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 2,
+    maxlength: 16,
   },
   userId: {
     type: String,
     required: true,
     unique: true,
     lowercase: true,
+    minlength: 3,
     validate: [],
   },
   password: {
@@ -23,23 +25,15 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 10,
   },
+  salt: {
+    type: String,
+    require: true,
+  },
   activate: {
     data: Boolean,
     default: false,
   },
 });
-
-// userSchema.statics.login = async function (email, password) {
-//   const user = await this.findOne({ userId });
-//   if (user) {
-//     const auth = await bcrypt.compare(password, user.password);
-//     if (auth) {
-//       return user;
-//     }
-//     throw Error("비밀번호 오류");
-//   }
-//   throw Error("아이디 오류");
-// };
 
 const User = mongoose.model("user", userSchema);
 module.exports = User;

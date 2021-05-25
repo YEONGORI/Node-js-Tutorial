@@ -60,10 +60,16 @@ const send_message = (phone) => {
       }
     }
   );
-  return resultCode;
+  return user_auth_number;
 };
 
-module.exports.sendsms = (req, res) => {
-  user_phone_number = req.body.phoneNum;
-  send_message(user_phone_number);
+// module.exports.sendsms = (req, res) => {
+//   user_phone_number = req.body.phoneNum;
+//   const UAN = send_message(user_phone_number);
+//   return UAN;
+// };
+
+module.exports.sendsms = (phoneNum) => {
+  const userAuthNum = send_message(phoneNum);
+  return userAuthNum;
 };

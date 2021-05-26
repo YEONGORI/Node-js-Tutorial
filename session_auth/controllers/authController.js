@@ -164,44 +164,48 @@ module.exports.findPW_get = async (res) => {
 };
 
 module.exports.findPW_post = async (req, res) => {
-  const { userId, phoneNum, authNum, password } = req.body;
+  const { userId, phoneNum, authNum, resetPassword } = req.body;
   // userId는 DB에서 유저 정보를 조회하기 위함, phoneNum는 인증번호를 발송하기 위함
-  // authNum은 수신받은 SMS의 인증번호를 입력하기 위함, password는 password를 재설정하기 위함 (phoneNum, authNum) ajax 처리 필요
+  // authNum은 수신받은 SMS의 인증번호를 입력하기 위함, resetPassword는 password를 재설정하기 위함 (phoneNum, authNum) ajax 처리 필요
 
   const users = await User.findOne({ userId });
-  const savedPhoneNum = users.phoneNum;
-
   if (!users) {
-    console.log("아이디가 존재하지 않습니다.");
-  } else if (savedPhoneNum !== phoneNum) {
-    console.log("핸드폰 번호를 확인해 주세요");
-  } else {
-    try {
-      // const savedAuthNum = smsController.sendsms(phoneNum); // 인증번호 전송 모듈 사용
-      const savedAuthNum = 123456;
-      if (savedAuthNum === authNum) {
-        // 인증번호 일치시
-        const salt = users.salt;
-        const hashedPassword = await bcrypt.hash(password, salt); // 회원가입과 동일한 salt로 암호화
-        await User.findOneAndUpdate(
-          // User정보 조회 후 Update
-          {},
-          { password: hashedPassword },
-          { new: true, useFindAndModify: false }, // findOnAndUpdate 사용위해 useFindAndModify: false 설정 추가, 업데이트된 User 정보 확인을 위한 new:true
-          (err, docs) => {
-            if (err) console.log(err);
-            else {
-              res.json({
-                message: "비밀번호 변경 완료",
-                docs,
-              });
-            }
+    return console.log("아이디가 존재하지 않습니다.");
+  }
+  const savedPhoneNum = users.phoneNum;
+  if (savedPhoneNum !== phoneNum) {
+    return console.log("핸드폰 번호를 확인해 주세요");
+  }
+  try {
+    // const savedAuthNum = smsController.sendsms(phoneNum); // 인증번호 전송 모듈 사용
+
+    const savedAuthNum = "123456";
+    console.log(authNum);
+    console.log(savedAuthNum);
+    if (savedAuthNum === authNum) {
+      // 인증번호 일치시
+      const salt = users.salt;
+      const hashedPassword = await bcrypt.hash(resetPassword, salt); // 회원가입과 동일한 salt로 암호화
+      await User.findOneAndUpdate(
+        // User정보 조회 후 Update
+        {},
+        { password: hashedPassword },
+        { new: true, useFindAndModify: false }, // findOnAndUpdate 사용위해 useFindAndModify: false 설정 추가, 업데이트된 User 정보 확인을 위한 new:true
+        (err, docs) => {
+          if (err) console.log(err);
+          else {
+            res.json({
+              message: "비밀번호 변경 완료",
+              docs,
+            });
           }
-        );
-      }
-    } catch (err) {
-      console.log(err);
+        }
+      );
+    } else {
+      return console.log("인증번호를 확인해주세요");
     }
+  } catch (err) {
+    console.log(err);
   }
 };
 
@@ -210,7 +214,8 @@ module.exports.smsAuth_post = (req, res) => {
   const { phoneNum, authNum } = req.body;
   // const { phoneNum } = req.body.phoneNum;
   // const { authNum } = req.body.authNum;
-  const savedAuthNum = smsController.sendsms(phoneNum);
+  //const savedAuthNum = smsController.sendsms(phoneNum);
+  const savedAuthNum = "123456";
   try {
     if (authNum === savedAuthNum) {
       res.json({
@@ -234,8 +239,7 @@ module.exports.dup_id_post = async (req, res) => {
   const users = await User.findOne({ userId });
   try {
     if (users) {
-      console.log("이미 사용중인 ID 입니다.");
-      return res.redirect("/auth/register");
+      res.json("이미 사용중인 ID 입니다.");
     } else {
       res.json("사용가능");
     }

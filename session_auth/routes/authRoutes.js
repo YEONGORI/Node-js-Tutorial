@@ -32,7 +32,7 @@ router.post("/find-id", authController.findID_post);
 router.get("/find-pw", authController.findPW_get);
 router.post("/find-pw", authController.findPW_post);
 
-// SMS 인증 (PW 찾기에 속해있음, 인증버튼 클릭때 사용될 route, 필수 파라미터: phoneNum)
+// SMS 인증 (회원가입에 속해있음, 인증버튼 클릭때 사용될 route, 필수 파라미터: phoneNum)
 // 요청 url 예시 http://localhost:3333/auth/sms-auth
 router.post("/sms-auth", authController.smsAuth_post);
 

@@ -1,3 +1,8 @@
+/**
+ * 이 컨트롤러는 naver sens api문서를 참고해 만들었습니다
+ * 어려운 부분은 블로그에도 많이 나와있으니 참고해주세요!
+ */
+
 const CryptoJS = require("crypto-js");
 const SHA256 = require("crypto-js/sha256");
 const Base64 = require("crypto-js/enc-base64");
@@ -5,6 +10,7 @@ const dotenv = require("dotenv").config(); // .env 파일을 자동으로 로드
 const axios = require("axios"); // request 지원 끊겨서 axios로 바꿔야하는데 자꾸 에러나서 일단 놔뒀어요
 const request = require("request");
 const math = require("mathjs");
+
 const User = require("../models/User");
 
 const send_message = (phone) => {
@@ -62,12 +68,6 @@ const send_message = (phone) => {
   );
   return user_auth_number;
 };
-
-// module.exports.sendsms = (req, res) => {
-//   user_phone_number = req.body.phoneNum;
-//   const UAN = send_message(user_phone_number);
-//   return UAN;
-// };
 
 module.exports.sendsms = (phoneNum) => {
   const userAuthNum = send_message(phoneNum);
